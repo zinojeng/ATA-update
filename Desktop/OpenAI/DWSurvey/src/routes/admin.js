@@ -91,6 +91,186 @@ router.put('/polls/:id/close', authenticate, async (req, res) => {
   }
 });
 
+// Update poll details
+router.put('/polls/:id', authenticate, async (req, res) => {
+  try {
+    const pollId = req.params.id;
+    const { title, description } = req.body;
+
+    await db.run(
+      'UPDATE polls SET title = ?, description = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+      [title, description, pollId]
+    );
+
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get single poll with all questions and options
+router.post('/polls/:id/edit', authenticate, async (req, res) => {
+  try {
+    const pollId = req.params.id;
+    
+    const poll = await db.get('SELECT * FROM polls WHERE id = ?', [pollId]);
+    if (!poll) {
+      return res.status(404).json({ error: 'Poll not found' });
+    }
+
+    const questions = await db.all(
+      'SELECT * FROM questions WHERE poll_id = ? ORDER BY order_index',
+      [pollId]
+    );
+
+    for (let question of questions) {
+      question.options = await db.all(
+        'SELECT * FROM options WHERE question_id = ? ORDER BY order_index',
+        [question.id]
+      );
+    }
+
+    poll.questions = questions;
+    res.json(poll);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Update question
+router.put('/questions/:id', authenticate, async (req, res) => {
+  try {
+    const questionId = req.params.id;
+    const { question_text, question_type } = req.body;
+
+    await db.run(
+      'UPDATE questions SET question_text = ?, question_type = ? WHERE id = ?',
+      [question_text, question_type || 'single', questionId]
+    );
+
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Add new question to poll
+router.post('/polls/:id/questions', authenticate, async (req, res) => {
+  try {
+    const pollId = req.params.id;
+    const { question_text, question_type, options } = req.body;
+
+    // Get max order_index
+    const maxOrder = await db.get(
+      'SELECT MAX(order_index) as max_order FROM questions WHERE poll_id = ?',
+      [pollId]
+    );
+    const orderIndex = (maxOrder.max_order || 0) + 1;
+
+    // Insert question
+    const questionResult = await db.run(
+      'INSERT INTO questions (poll_id, question_text, question_type, order_index) VALUES (?, ?, ?, ?)',
+      [pollId, question_text, question_type || 'single', orderIndex]
+    );
+    
+    const questionId = questionResult.id;
+
+    // Insert options
+    if (options && Array.isArray(options)) {
+      for (let i = 0; i < options.length; i++) {
+        await db.run(
+          'INSERT INTO options (question_id, option_text, order_index) VALUES (?, ?, ?)',
+          [questionId, options[i], i]
+        );
+      }
+    }
+
+    res.json({ success: true, questionId });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Delete question
+router.delete('/questions/:id', authenticate, async (req, res) => {
+  try {
+    const questionId = req.params.id;
+
+    await db.run('DELETE FROM questions WHERE id = ?', [questionId]);
+
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Update option
+router.put('/options/:id', authenticate, async (req, res) => {
+  try {
+    const optionId = req.params.id;
+    const { option_text } = req.body;
+
+    await db.run(
+      'UPDATE options SET option_text = ? WHERE id = ?',
+      [option_text, optionId]
+    );
+
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Add new option to question
+router.post('/questions/:id/options', authenticate, async (req, res) => {
+  try {
+    const questionId = req.params.id;
+    const { option_text } = req.body;
+
+    // Get max order_index
+    const maxOrder = await db.get(
+      'SELECT MAX(order_index) as max_order FROM options WHERE question_id = ?',
+      [questionId]
+    );
+    const orderIndex = (maxOrder.max_order || 0) + 1;
+
+    const result = await db.run(
+      'INSERT INTO options (question_id, option_text, order_index) VALUES (?, ?, ?)',
+      [questionId, option_text, orderIndex]
+    );
+
+    res.json({ success: true, optionId: result.id });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Delete option
+router.delete('/options/:id', authenticate, async (req, res) => {
+  try {
+    const optionId = req.params.id;
+
+    // Check if there are votes for this option
+    const voteCount = await db.get(
+      'SELECT COUNT(*) as count FROM votes WHERE option_id = ?',
+      [optionId]
+    );
+
+    if (voteCount.count > 0) {
+      return res.status(400).json({ 
+        error: 'Cannot delete option with existing votes',
+        voteCount: voteCount.count 
+      });
+    }
+
+    await db.run('DELETE FROM options WHERE id = ?', [optionId]);
+
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Delete poll
 router.delete('/polls/:id', authenticate, async (req, res) => {
   try {

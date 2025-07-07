@@ -76,6 +76,7 @@ function displayAdminPolls(polls) {
             <div class="poll-actions">
                 <button class="view-btn" onclick="window.open('/?poll=${poll.id}', '_blank')">View</button>
                 <button class="qr-btn" onclick="showQRCodes(${poll.id}, '${poll.title}')">QR Codes</button>
+                <button class="edit-btn" onclick="editPoll(${poll.id})">Edit</button>
                 <button class="toggle-btn ${poll.active ? '' : 'inactive'}" 
                         onclick="togglePollStatus(${poll.id}, ${!poll.active})">
                     ${poll.active ? 'Deactivate' : 'Activate'}
@@ -338,6 +339,297 @@ function closeQRModal() {
 // Print QR codes
 function printQRCodes(pollId) {
     window.open(`/api/qr/poll/${pollId}/print`, '_blank');
+}
+
+// Edit poll
+async function editPoll(pollId) {
+    try {
+        // Get poll data
+        const response = await fetch(`/api/admin/polls/${pollId}/edit`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                password: adminPassword
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to load poll');
+        }
+        
+        const poll = await response.json();
+        showEditForm(poll);
+    } catch (error) {
+        alert('Error loading poll: ' + error.message);
+    }
+}
+
+// Show edit form
+function showEditForm(poll) {
+    // Hide other forms
+    document.getElementById('createPollForm').style.display = 'none';
+    
+    // Create edit form if doesn't exist
+    let editForm = document.getElementById('editPollForm');
+    if (!editForm) {
+        editForm = document.createElement('div');
+        editForm.id = 'editPollForm';
+        editForm.className = 'admin-form';
+        document.querySelector('.admin-actions').after(editForm);
+    }
+    
+    editForm.innerHTML = `
+        <h3>Edit Poll</h3>
+        <form onsubmit="updatePoll(event, ${poll.id})">
+            <div class="form-group">
+                <label>Poll Title</label>
+                <input type="text" id="editPollTitle" value="${poll.title}" required>
+            </div>
+            <div class="form-group">
+                <label>Description (optional)</label>
+                <textarea id="editPollDescription" rows="3">${poll.description || ''}</textarea>
+            </div>
+            
+            <div id="editQuestionsContainer">
+                <h4>Questions</h4>
+                ${poll.questions.map((q, qIndex) => `
+                    <div class="question-block" data-question-id="${q.id}">
+                        <div class="question-header">
+                            <span>Question ${qIndex + 1}</span>
+                            <button type="button" class="delete-btn" onclick="deleteQuestion(${q.id})">Delete Question</button>
+                        </div>
+                        <input type="text" value="${q.question_text}" 
+                               onchange="updateQuestion(${q.id}, this.value)" 
+                               class="question-input" required>
+                        <div class="options-container">
+                            ${q.options.map((opt, optIndex) => `
+                                <div class="option-item" data-option-id="${opt.id}">
+                                    <input type="text" value="${opt.option_text}" 
+                                           onchange="updateOption(${opt.id}, this.value)" 
+                                           class="option-input" required>
+                                    <button type="button" class="delete-option-btn" 
+                                            onclick="deleteOption(${opt.id})">×</button>
+                                </div>
+                            `).join('')}
+                            <button type="button" class="add-option-btn" 
+                                    onclick="addOption(${q.id})">+ Add Option</button>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+            
+            <button type="button" class="add-question-btn" onclick="addQuestion(${poll.id})">+ Add Question</button>
+            
+            <div class="form-actions">
+                <button type="submit" class="submit-btn">Save Changes</button>
+                <button type="button" class="cancel-btn" onclick="hideEditForm()">Cancel</button>
+            </div>
+        </form>
+    `;
+    
+    editForm.style.display = 'block';
+    editForm.scrollIntoView({ behavior: 'smooth' });
+}
+
+// Hide edit form
+function hideEditForm() {
+    const editForm = document.getElementById('editPollForm');
+    if (editForm) {
+        editForm.style.display = 'none';
+    }
+}
+
+// Update poll details
+async function updatePoll(event, pollId) {
+    event.preventDefault();
+    
+    try {
+        const response = await fetch(`/api/admin/polls/${pollId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                password: adminPassword,
+                title: document.getElementById('editPollTitle').value,
+                description: document.getElementById('editPollDescription').value
+            })
+        });
+        
+        if (response.ok) {
+            alert('Poll updated successfully');
+            hideEditForm();
+            loadAdminPolls();
+        } else {
+            throw new Error('Failed to update poll');
+        }
+    } catch (error) {
+        alert('Error updating poll: ' + error.message);
+    }
+}
+
+// Update question
+async function updateQuestion(questionId, text) {
+    try {
+        const response = await fetch(`/api/admin/questions/${questionId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                password: adminPassword,
+                question_text: text
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to update question');
+        }
+    } catch (error) {
+        alert('Error updating question: ' + error.message);
+    }
+}
+
+// Update option
+async function updateOption(optionId, text) {
+    try {
+        const response = await fetch(`/api/admin/options/${optionId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                password: adminPassword,
+                option_text: text
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to update option');
+        }
+    } catch (error) {
+        alert('Error updating option: ' + error.message);
+    }
+}
+
+// Add new question
+async function addQuestion(pollId) {
+    const questionText = prompt('Enter question text:');
+    if (!questionText) return;
+    
+    try {
+        const response = await fetch(`/api/admin/polls/${pollId}/questions`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                password: adminPassword,
+                question_text: questionText,
+                question_type: 'single',
+                options: ['Option 1', 'Option 2']
+            })
+        });
+        
+        if (response.ok) {
+            editPoll(pollId); // Reload edit form
+        } else {
+            throw new Error('Failed to add question');
+        }
+    } catch (error) {
+        alert('Error adding question: ' + error.message);
+    }
+}
+
+// Add new option
+async function addOption(questionId) {
+    const optionText = prompt('Enter option text:');
+    if (!optionText) return;
+    
+    try {
+        const response = await fetch(`/api/admin/questions/${questionId}/options`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                password: adminPassword,
+                option_text: optionText
+            })
+        });
+        
+        if (response.ok) {
+            // Find poll ID and reload edit form
+            const pollId = document.querySelector('[data-question-id="' + questionId + '"]').closest('form').getAttribute('onsubmit').match(/\d+/)[0];
+            editPoll(pollId);
+        } else {
+            throw new Error('Failed to add option');
+        }
+    } catch (error) {
+        alert('Error adding option: ' + error.message);
+    }
+}
+
+// Delete question
+async function deleteQuestion(questionId) {
+    if (!confirm('Delete this question? This cannot be undone.')) return;
+    
+    try {
+        const response = await fetch(`/api/admin/questions/${questionId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                password: adminPassword
+            })
+        });
+        
+        if (response.ok) {
+            // Find poll ID and reload edit form
+            const pollId = document.querySelector('[data-question-id="' + questionId + '"]').closest('form').getAttribute('onsubmit').match(/\d+/)[0];
+            editPoll(pollId);
+        } else {
+            throw new Error('Failed to delete question');
+        }
+    } catch (error) {
+        alert('Error deleting question: ' + error.message);
+    }
+}
+
+// Delete option
+async function deleteOption(optionId) {
+    if (!confirm('Delete this option?')) return;
+    
+    try {
+        const response = await fetch(`/api/admin/options/${optionId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                password: adminPassword
+            })
+        });
+        
+        if (!response.ok) {
+            const error = await response.json();
+            if (error.voteCount) {
+                alert(`Cannot delete: This option has ${error.voteCount} votes.`);
+                return;
+            }
+            throw new Error('Failed to delete option');
+        }
+        
+        // Find poll ID and reload edit form
+        const pollForm = document.querySelector('[data-option-id="' + optionId + '"]').closest('form');
+        const pollId = pollForm.getAttribute('onsubmit').match(/\d+/)[0];
+        editPoll(pollId);
+    } catch (error) {
+        alert('Error deleting option: ' + error.message);
+    }
 }
 
 // Close poll voting
