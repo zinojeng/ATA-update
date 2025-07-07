@@ -7,8 +7,9 @@
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
     "init-db": "node src/db/init.js",
+    "migrate-db": "node src/db/migrate.js",
     "build": "npm ci --production",
-    "postinstall": "node src/db/init.js"
+    "postinstall": "node src/db/migrate.js && node src/db/init.js"
   },
   "engines": {
     "node": ">=18.0.0"
