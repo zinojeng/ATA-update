@@ -377,7 +377,14 @@ function showEditForm(poll) {
         editForm = document.createElement('div');
         editForm.id = 'editPollForm';
         editForm.className = 'admin-form';
-        document.querySelector('.admin-actions').after(editForm);
+        // Insert after the dashboard header or create form
+        const dashboard = document.getElementById('adminDashboard');
+        const createForm = document.getElementById('createPollForm');
+        if (createForm) {
+            createForm.after(editForm);
+        } else {
+            dashboard.appendChild(editForm);
+        }
     }
     
     editForm.innerHTML = `
@@ -562,8 +569,15 @@ async function addOption(questionId) {
         
         if (response.ok) {
             // Find poll ID and reload edit form
-            const pollId = document.querySelector('[data-question-id="' + questionId + '"]').closest('form').getAttribute('onsubmit').match(/\d+/)[0];
-            editPoll(pollId);
+            const questionElement = document.querySelector('[data-question-id="' + questionId + '"]');
+            if (questionElement) {
+                const form = questionElement.closest('form');
+                if (form) {
+                    const onsubmit = form.getAttribute('onsubmit');
+                    const pollId = onsubmit.match(/\d+/)[0];
+                    editPoll(pollId);
+                }
+            }
         } else {
             throw new Error('Failed to add option');
         }
@@ -589,8 +603,15 @@ async function deleteQuestion(questionId) {
         
         if (response.ok) {
             // Find poll ID and reload edit form
-            const pollId = document.querySelector('[data-question-id="' + questionId + '"]').closest('form').getAttribute('onsubmit').match(/\d+/)[0];
-            editPoll(pollId);
+            const questionElement = document.querySelector('[data-question-id="' + questionId + '"]');
+            if (questionElement) {
+                const form = questionElement.closest('form');
+                if (form) {
+                    const onsubmit = form.getAttribute('onsubmit');
+                    const pollId = onsubmit.match(/\d+/)[0];
+                    editPoll(pollId);
+                }
+            }
         } else {
             throw new Error('Failed to delete question');
         }
@@ -624,9 +645,15 @@ async function deleteOption(optionId) {
         }
         
         // Find poll ID and reload edit form
-        const pollForm = document.querySelector('[data-option-id="' + optionId + '"]').closest('form');
-        const pollId = pollForm.getAttribute('onsubmit').match(/\d+/)[0];
-        editPoll(pollId);
+        const optionElement = document.querySelector('[data-option-id="' + optionId + '"]');
+        if (optionElement) {
+            const form = optionElement.closest('form');
+            if (form) {
+                const onsubmit = form.getAttribute('onsubmit');
+                const pollId = onsubmit.match(/\d+/)[0];
+                editPoll(pollId);
+            }
+        }
     } catch (error) {
         alert('Error deleting option: ' + error.message);
     }
