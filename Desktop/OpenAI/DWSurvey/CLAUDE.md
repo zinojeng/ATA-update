@@ -181,3 +181,94 @@ DWSurvey/
 1. Export results (future feature)
 2. Archive or delete polls
 3. Analyze participation metrics
+
+## 疑難排解 (Troubleshooting)
+
+### Safari 連線問題解決方案
+
+#### 問題現象
+- Safari 無法開啟 `http://localhost:3000`
+- IP 位址 `http://192.168.1.118:3000` 被自動改寫為 `http://www.192.168.1.118`
+- Chrome 顯示「無法連上這個網站，192.168.1.118 拒絕連線」
+
+#### 問題分析 (根據 ChatGPT O3 分析)
+
+**1. 伺服器未運行**
+- 最常見原因：應用程式沒有在指定埠口監聽
+- 檢查指令：`lsof -nP -iTCP:3000 -sTCP:LISTEN` 或 `netstat -an | grep 3000`
+
+**2. IPv4/IPv6 位址差異**
+- Safari 解析 localhost 時優先使用 IPv6 (::1)
+- 如果程式只綁定 IPv4 (127.0.0.1) 會造成連線失敗
+- DWSurvey 正確設定：`server.listen(PORT, '0.0.0.0')` 同時支援 IPv4/IPv6
+
+**3. Safari 智慧搜尋列自動補全**
+- Safari 會將不完整的網址當作搜尋關鍵字
+- 自動添加 www 前綴或進行搜尋建議
+
+#### 解決步驟
+
+**1. 確認伺服器運行**
+```bash
+# 啟動伺服器
+npm start
+
+# 檢查是否正常運行
+netstat -an | grep 3000
+```
+
+**2. 使用正確的網址格式**
+- ✅ 正確：`http://192.168.1.118:3000/` (注意結尾斜線)
+- ✅ 正確：`http://127.0.0.1:3000/`
+- ✅ 正確：`http://localhost:3000/`
+- ❌ 錯誤：`192.168.1.118:3000` (缺少協定)
+
+**3. 測試連線 (依序檢查)**
+```bash
+# 測試 IPv4
+curl http://127.0.0.1:3000
+
+# 測試 IPv6
+curl http://[::1]:3000
+
+# 測試區網 IP
+curl http://192.168.1.118:3000
+```
+
+**4. Safari 設定調整 (如需要)**
+```bash
+# 關閉搜尋建議和自動補全
+defaults write com.apple.Safari UniversalSearchEnabled -bool NO
+defaults write com.apple.Safari SuppressSearchSuggestions -bool YES
+killall Safari
+```
+
+#### 預防措施
+
+**1. 伺服器設定檢查清單**
+- ✅ 綁定正確位址：`'0.0.0.0'` 而非 `'localhost'`
+- ✅ 確認埠口沒有被其他程式佔用
+- ✅ 檢查防火牆設定
+
+**2. 瀏覽器使用技巧**
+- 總是輸入完整網址 (包含 http:// 和結尾 /)
+- 優先使用 127.0.0.1 而非 localhost
+- 如遇問題可嘗試不同瀏覽器測試
+
+**3. 除錯工具**
+```bash
+# 檢查埠口佔用
+lsof -i :3000
+
+# 檢查伺服器日誌
+npm start (觀察輸出訊息)
+
+# 測試網路連線
+curl -v http://localhost:3000
+```
+
+#### 成功案例
+經實際測試，DWSurvey 在正確啟動後：
+- ✅ `http://192.168.1.118:3000/` 可正常運作
+- ✅ Safari/Chrome 都能正常存取
+- ✅ 區網內其他裝置可正常連線
