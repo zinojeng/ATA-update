@@ -56,6 +56,7 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running on port ${PORT}`);
   console.log(`Access the app at:`);
+  console.log(`  - http://192.168.1.118:${PORT}`);
   console.log(`  - http://localhost:${PORT}`);
   console.log(`  - http://127.0.0.1:${PORT}`);
 });
