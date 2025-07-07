@@ -6,7 +6,11 @@
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
-    "init-db": "node src/db/init.js"
+    "init-db": "node src/db/init.js",
+    "build": "npm install"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   },
   "keywords": ["voting", "polls", "real-time", "survey"],
   "author": "",
