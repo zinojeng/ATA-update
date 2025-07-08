@@ -6,9 +6,15 @@
 import os
 from typing import Dict, Any, List
 from .base_parser import BaseParser, ParsedDocument, ParsedContent
-import chardet
 import csv
 import re
+
+# Try to import chardet, use fallback if not available
+try:
+    import chardet
+    HAS_CHARDET = True
+except ImportError:
+    HAS_CHARDET = False
 
 
 class TextParser(BaseParser):
@@ -69,9 +75,21 @@ class TextParser(BaseParser):
     
     def _detect_encoding(self, file_path: str) -> str:
         """偵測檔案編碼"""
-        with open(file_path, 'rb') as f:
-            result = chardet.detect(f.read(10000))
-        return result['encoding'] or 'utf-8'
+        if HAS_CHARDET:
+            with open(file_path, 'rb') as f:
+                result = chardet.detect(f.read(10000))
+            return result['encoding'] or 'utf-8'
+        else:
+            # Fallback: try common encodings
+            encodings = ['utf-8', 'utf-8-sig', 'cp1252', 'iso-8859-1']
+            for encoding in encodings:
+                try:
+                    with open(file_path, 'r', encoding=encoding) as f:
+                        f.read(1000)  # Try reading a small portion
+                    return encoding
+                except UnicodeDecodeError:
+                    continue
+            return 'utf-8'  # Default fallback
     
     def _parse_plain_text(self, content: str) -> List[ParsedContent]:
         """解析純文字內容"""

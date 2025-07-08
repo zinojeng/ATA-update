@@ -5,7 +5,6 @@
 """
 
 from .key_element_extractor import KeyElementExtractor
-from .entity_extractor import EntityExtractor
 from .semantic_extractor import SemanticExtractor
 
-__all__ = ['KeyElementExtractor', 'EntityExtractor', 'SemanticExtractor']
+__all__ = ['KeyElementExtractor', 'SemanticExtractor']

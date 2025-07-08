@@ -5,9 +5,6 @@
 """
 
 from .base_parser import BaseParser
-from .pdf_parser import PDFParser
-from .excel_parser import ExcelParser
-from .word_parser import WordParser
 from .text_parser import TextParser
 
-__all__ = ['BaseParser', 'PDFParser', 'ExcelParser', 'WordParser', 'TextParser']
+__all__ = ['BaseParser', 'TextParser']
