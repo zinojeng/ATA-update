@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply text-gray-900 antialiased;
+  }
+}
+
+@layer components {
+  .lecture-card {
+    @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200;
+  }
+  
+  .lecture-card:hover {
+    @apply transform -translate-y-1;
+  }
+  
+  .tab-button {
+    @apply px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-200;
+  }
+  
+  .tab-button.active {
+    @apply bg-gray-900 text-white;
+  }
+  
+  .tab-button:not(.active) {
+    @apply text-gray-600 hover:text-gray-900 hover:bg-gray-100;
+  }
+  
+  .transcript-segment {
+    @apply p-3 rounded-md transition-colors duration-200 cursor-pointer;
+  }
+  
+  .transcript-segment.highlighted {
+    @apply bg-yellow-100 border-l-4 border-yellow-400;
+  }
+  
+  .transcript-segment:hover {
+    @apply bg-gray-50;
+  }
+  
+  .upload-zone {
+    @apply border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-gray-400 transition-colors duration-200;
+  }
+  
+  .upload-zone.dragover {
+    @apply border-blue-400 bg-blue-50;
+  }
+}
+
