@@ -1,0 +1,65 @@
+[
+  {
+    "section": "Executive Summary",
+    "category": "Overview",
+    "old": "The 2015 ATA guidelines summarized key recommendations for evaluation and management of thyroid nodules and differentiated thyroid cancer with emphasis on risk-adapted therapy.",
+    "new": "The 2025 update highlights individualized care, integrating molecular profiling and patient-centered outcomes into guideline recommendations.",
+    "status": "updated"
+  },
+  {
+    "section": "Molecular Testing",
+    "category": "Indications",
+    "old": "Molecular testing focused on single-gene assays such as BRAF or RAS for indeterminate cytology.",
+    "new": "Expanded use of comprehensive next-generation sequencing panels to refine diagnosis and risk stratification in indeterminate nodules.",
+    "status": "expanded"
+  },
+  {
+    "section": "Nodule Evaluation",
+    "category": "Ultrasound Criteria",
+    "old": "Risk patterns were based on sonographic features without standardized scoring systems.",
+    "new": "Incorporation of TI-RADS style scoring with clear thresholds for fine-needle aspiration and surveillance.",
+    "status": "updated"
+  },
+  {
+    "section": "Surgery",
+    "category": "Extent of Thyroidectomy",
+    "old": "Total thyroidectomy was recommended for tumors greater than 1 cm in many low-risk patients.",
+    "new": "Selective lobectomy is endorsed for appropriately selected low-risk tumors, emphasizing organ preservation.",
+    "status": "revised"
+  },
+  {
+    "section": "Staging and Risk Stratification",
+    "category": "ATA Risk Categories",
+    "old": "Patients were classified into low, intermediate, or high risk based on clinicopathologic features.",
+    "new": "Dynamic risk stratification incorporating treatment response and molecular markers guides ongoing management.",
+    "status": "updated"
+  },
+  {
+    "section": "Radioactive Iodine Therapy",
+    "category": "Indications",
+    "old": "Adjuvant radioactive iodine was commonly used for many intermediate-risk patients.",
+    "new": "Use of radioactive iodine is more selective, reserved for high-risk disease and selected intermediate-risk cases.",
+    "status": "reduced"
+  },
+  {
+    "section": "TSH Suppression",
+    "category": "TSH Targets",
+    "old": "Aggressive suppression below 0.1 mU/L was recommended for most patients after surgery.",
+    "new": "TSH goals are individualized to balance recurrence risk with cardiovascular and bone health.",
+    "status": "modified"
+  },
+  {
+    "section": "Follow-Up",
+    "category": "Monitoring",
+    "old": "Routine intervals for thyroglobulin testing and neck ultrasound were applied uniformly.",
+    "new": "Risk-adapted surveillance uses biomarkers, imaging, and emerging decision-support tools for tailored follow-up.",
+    "status": "updated"
+  },
+  {
+    "section": "Recurrent or Metastatic Disease",
+    "category": "Systemic Therapy",
+    "old": "Treatment options were limited to multikinase inhibitors for radioiodine-refractory disease.",
+    "new": "Inclusion of targeted therapies and immunotherapy guided by molecular profiling expands options for advanced disease.",
+    "status": "expanded"
+  }
+]
