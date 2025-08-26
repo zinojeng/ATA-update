@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ATA 2015 vs 2025 比較</title>
+    <link rel="stylesheet" href="/public/styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <h1>ATA 指南比較（2015 ↔ 2025）</h1>
+      <div class="toolbar">
+        <label>
+          模式
+          <select id="modeSelect">
+            <option value="overview">Overview</option>
+            <option value="detailed" selected>Detailed</option>
+            <option value="changes">Change-only</option>
+          </select>
+        </label>
+        <label>
+          顯示
+          <select id="viewSelect">
+            <option value="both" selected>2015 與 2025</option>
+            <option value="2015">僅 2015</option>
+            <option value="2025">僅 2025</option>
+          </select>
+        </label>
+        <label class="grow">
+          篩選標題
+          <input id="filterInput" type="search" placeholder="輸入關鍵字過濾標題" />
+        </label>
+        <div class="legend">
+          <span class="legend-item chg-new">新</span>
+          <span class="legend-item chg-mod">改</span>
+          <span class="legend-item chg-rem">移</span>
+          <span class="legend-item chg-same">同</span>
+        </div>
+      </div>
+    </header>
+
+    <main id="app"></main>
+
+    <footer class="app-footer">
+      <span>載入資料自 /data/*</span>
+    </footer>
+
+    <script src="/public/app.js" defer></script>
+  </body>
+  </html>
+
