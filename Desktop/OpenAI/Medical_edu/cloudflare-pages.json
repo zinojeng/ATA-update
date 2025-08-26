@@ -1,0 +1,118 @@
+{
+  "name": "醫療教育平台 Cloudflare Pages 設定範例",
+  "description": "此檔案包含部署到 Cloudflare Pages 所需的環境變數和設定說明",
+  
+  "required_github_secrets": {
+    "CF_API_TOKEN": {
+      "description": "Cloudflare API Token，需要具備 Cloudflare Pages:Edit 權限",
+      "how_to_get": [
+        "1. 登入 Cloudflare Dashboard (https://dash.cloudflare.com/)",
+        "2. 點擊右上角的使用者圖示 > My Profile",
+        "3. 選擇 API Tokens 標籤",
+        "4. 點擊 Create Token",
+        "5. 使用 Custom token 模板",
+        "6. 設定權限：Zone:Zone:Read, Zone:Page Rules:Edit, Account:Cloudflare Pages:Edit",
+        "7. 設定 Account Resources: Include - All accounts",
+        "8. 設定 Zone Resources: Include - All zones",
+        "9. 複製生成的 Token 並加入 GitHub Secrets"
+      ]
+    },
+    
+    "CF_ACCOUNT_ID": {
+      "description": "Cloudflare 帳戶 ID",
+      "how_to_get": [
+        "1. 登入 Cloudflare Dashboard",
+        "2. 在右側邊欄可以看到 Account ID",
+        "3. 複製該 ID 並加入 GitHub Secrets"
+      ]
+    },
+    
+    "CF_PROJECT_NAME": {
+      "description": "Cloudflare Pages 專案名稱",
+      "how_to_get": [
+        "1. 在 Cloudflare Dashboard 中進入 Pages",
+        "2. 建立新專案或使用現有專案",
+        "3. 專案名稱即為 CF_PROJECT_NAME",
+        "4. 注意：專案名稱必須是小寫字母、數字和連字符"
+      ],
+      "example": "medical-education-platform"
+    }
+  },
+  
+  "cloudflare_pages_settings": {
+    "build_settings": {
+      "framework_preset": "Next.js (Static HTML Export)",
+      "build_command": "pnpm build",
+      "build_output_directory": "out",
+      "root_directory": "/",
+      "environment_variables": {
+        "NODE_VERSION": "18",
+        "NEXT_TELEMETRY_DISABLED": "1"
+      }
+    },
+    
+    "deployment_settings": {
+      "production_branch": "main",
+      "preview_deployments": "enabled",
+      "preview_branch_includes": ["develop", "staging"],
+      "preview_branch_excludes": ["temp/*"]
+    },
+    
+    "custom_domain": {
+      "description": "可選：設定自訂網域",
+      "steps": [
+        "1. 在 Cloudflare Pages 專案設定中選擇 Custom domains",
+        "2. 點擊 Set up a custom domain",
+        "3. 輸入您的網域名稱",
+        "4. 按照指示設定 DNS 記錄"
+      ]
+    }
+  },
+  
+  "setup_instructions": {
+    "step_1": "在 GitHub 專案中設定 Secrets",
+    "step_2": "在 Cloudflare 中建立 Pages 專案",
+    "step_3": "連接 GitHub 儲存庫到 Cloudflare Pages",
+    "step_4": "設定建置參數（參考上方 build_settings）",
+    "step_5": "推送程式碼到 main 分支觸發自動部署"
+  },
+  
+  "troubleshooting": {
+    "build_fails": [
+      "檢查 Node.js 版本是否正確（建議使用 18）",
+      "確認 pnpm 安裝成功",
+      "檢查 package.json 中的 build script",
+      "查看建置日誌中的錯誤訊息"
+    ],
+    
+    "deployment_fails": [
+      "確認 CF_API_TOKEN 權限正確",
+      "檢查 CF_ACCOUNT_ID 是否正確",
+      "確認 CF_PROJECT_NAME 存在且拼寫正確",
+      "檢查輸出目錄路徑是否正確"
+    ],
+    
+    "page_not_loading": [
+      "檢查 Next.js 是否正確設定為 static export",
+      "確認所有資源路徑使用相對路徑",
+      "檢查 next.config.js 設定",
+      "查看瀏覽器開發者工具的錯誤訊息"
+    ]
+  },
+  
+  "performance_optimization": {
+    "caching": "Cloudflare 會自動快取靜態資源",
+    "compression": "啟用 Gzip/Brotli 壓縮",
+    "cdn": "全球 CDN 加速",
+    "ssl": "自動 SSL 憑證",
+    "analytics": "可在 Cloudflare Dashboard 查看流量分析"
+  },
+  
+  "security_considerations": {
+    "api_tokens": "定期輪換 API Token",
+    "secrets_management": "不要在程式碼中硬編碼敏感資訊",
+    "access_control": "設定適當的 API Token 權限範圍",
+    "monitoring": "監控部署日誌和錯誤"
+  }
+}
+

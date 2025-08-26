@@ -1,0 +1,64 @@
+{
+  "name": "medical-education-platform",
+  "version": "1.0.0",
+  "description": "一個極簡、視覺化且具互動性的醫療教育網站",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "type-check": "tsc --noEmit",
+    "export": "next export",
+    "transcribe": "node scripts/transcribe_and_note.ts",
+    "transcribe:batch": "node scripts/transcribe_and_note.ts --batch",
+    "clean": "rm -rf .next out",
+    "preview": "pnpm build && pnpm start",
+    "analyze": "cross-env ANALYZE=true next build"
+  },
+  "dependencies": {
+    "next": "^14.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "openai": "^4.20.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.31",
+    "tailwindcss": "^3.3.5",
+    "typescript": "^5.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.10.0",
+  "keywords": [
+    "medical",
+    "education",
+    "healthcare",
+    "transcription",
+    "ai",
+    "nextjs",
+    "typescript",
+    "tailwindcss"
+  ],
+  "author": {
+    "name": "Medical Education Platform Team",
+    "email": "contact@medical-edu-platform.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/medical-education-platform.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/medical-education-platform/issues"
+  },
+  "homepage": "https://github.com/your-username/medical-education-platform#readme"
+}
+
