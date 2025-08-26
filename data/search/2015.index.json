@@ -1,5 +1,40 @@
 {
-  "generated_at": "2025-08-26T23:38:43.922099Z",
+  "generated_at": "2025-08-26T23:45:55.387731Z",
   "version": "2015",
-  "entries": []
+  "entries": [
+    {
+      "version": "2015",
+      "id": "2015-1-1-reco-a",
+      "anchor": "1-1-recommendation-a-initial-evaluation",
+      "title": "Recommendation A: Initial Evaluation",
+      "path": "1.1",
+      "tags": [
+        "initial",
+        "evaluation"
+      ],
+      "snippet": "Perform initial clinical assessment and ultrasound for all suspicious nodules.\nAssess patient history and risk factors\nNeck ultrasound with nodule characterization\nConsider FNA for nodules meeting size/risk criteria"
+    },
+    {
+      "version": "2015",
+      "id": "2015-0-9-legacy-approach",
+      "anchor": "0-9-legacy-approach-routine-follow-up",
+      "title": "Legacy Approach: Routine follow-up schedule",
+      "path": "0.9",
+      "tags": [
+        "follow-up"
+      ],
+      "snippet": "Suggest routine follow-up every 12 months for low-risk nodules."
+    },
+    {
+      "version": "2015",
+      "id": "2015-2-0-terminology",
+      "anchor": "2-0-terminology-and-definitions",
+      "title": "Terminology and Definitions",
+      "path": "2.0",
+      "tags": [
+        "terminology"
+      ],
+      "snippet": "Standardized terminology is used across these guidelines to ensure clarity."
+    }
+  ]
 }

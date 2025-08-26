@@ -1,4 +1,74 @@
 {
-  "generated_at": "2025-08-26T23:38:43.922424Z",
-  "entries": []
+  "generated_at": "2025-08-26T23:45:55.388415Z",
+  "entries": [
+    {
+      "version": "2015",
+      "id": "2015-1-1-reco-a",
+      "anchor": "1-1-recommendation-a-initial-evaluation",
+      "title": "Recommendation A: Initial Evaluation",
+      "path": "1.1",
+      "tags": [
+        "initial",
+        "evaluation"
+      ],
+      "snippet": "Perform initial clinical assessment and ultrasound for all suspicious nodules.\nAssess patient history and risk factors\nNeck ultrasound with nodule characterization\nConsider FNA for nodules meeting size/risk criteria"
+    },
+    {
+      "version": "2015",
+      "id": "2015-0-9-legacy-approach",
+      "anchor": "0-9-legacy-approach-routine-follow-up",
+      "title": "Legacy Approach: Routine follow-up schedule",
+      "path": "0.9",
+      "tags": [
+        "follow-up"
+      ],
+      "snippet": "Suggest routine follow-up every 12 months for low-risk nodules."
+    },
+    {
+      "version": "2015",
+      "id": "2015-2-0-terminology",
+      "anchor": "2-0-terminology-and-definitions",
+      "title": "Terminology and Definitions",
+      "path": "2.0",
+      "tags": [
+        "terminology"
+      ],
+      "snippet": "Standardized terminology is used across these guidelines to ensure clarity."
+    },
+    {
+      "version": "2025",
+      "id": "2025-1-1-reco-a",
+      "anchor": "1-1-recommendation-a-initial-evaluation",
+      "title": "Recommendation A: Initial Evaluation",
+      "path": "1.1",
+      "tags": [
+        "initial",
+        "evaluation"
+      ],
+      "snippet": "Perform initial clinical assessment, ultrasound, and consider molecular testing when appropriate.\nAssess patient history and risk factors\nHigh-quality neck ultrasound with standardized reporting\nConsider FNA or molecular testing based on ri…"
+    },
+    {
+      "version": "2025",
+      "id": "2025-1-3-new-risk-strat",
+      "anchor": "1-3-new-section-risk-stratification-updates",
+      "title": "New Section: Risk Stratification Updates",
+      "path": "1.3",
+      "tags": [
+        "risk",
+        "updates"
+      ],
+      "snippet": "Introduces updated ultrasound risk patterns and thresholds for FNA."
+    },
+    {
+      "version": "2025",
+      "id": "2025-2-0-terminology",
+      "anchor": "2-0-terminology-and-definitions",
+      "title": "Terminology and Definitions",
+      "path": "2.0",
+      "tags": [
+        "terminology"
+      ],
+      "snippet": "Standardized terminology is used across these guidelines to ensure clarity."
+    }
+  ]
 }

@@ -2,7 +2,55 @@
   "version": "2025",
   "title": "ATA Thyroid Nodule and Cancer Guidelines",
   "source_file": "2025 ATA thyroid nodule and cancer.pdf",
-  "generated_at": "2025-08-26T23:38:43.877487Z",
-  "sections": [],
-  "notes": "Placeholder file. Populate via Structuring Agent after extraction."
+  "generated_at": "2025-08-27T07:38:00Z",
+  "sections": [
+    {
+      "id": "2025-1-1-reco-a",
+      "path": "1.1",
+      "title": "Recommendation A: Initial Evaluation",
+      "level": 2,
+      "anchor": "1-1-recommendation-a-initial-evaluation",
+      "page_start": 11,
+      "page_end": 13,
+      "content": [
+        {"type": "p", "text": "Perform initial clinical assessment, ultrasound, and consider molecular testing when appropriate."},
+        {"type": "list", "ordered": false, "items": [
+          "Assess patient history and risk factors",
+          "High-quality neck ultrasound with standardized reporting",
+          "Consider FNA or molecular testing based on risk and size criteria"
+        ]}
+      ],
+      "tags": ["initial", "evaluation"],
+      "references": []
+    },
+    {
+      "id": "2025-1-3-new-risk-strat",
+      "path": "1.3",
+      "title": "New Section: Risk Stratification Updates",
+      "level": 2,
+      "anchor": "1-3-new-section-risk-stratification-updates",
+      "page_start": 14,
+      "page_end": 16,
+      "content": [
+        {"type": "p", "text": "Introduces updated ultrasound risk patterns and thresholds for FNA."}
+      ],
+      "tags": ["risk", "updates"],
+      "references": []
+    },
+    {
+      "id": "2025-2-0-terminology",
+      "path": "2.0",
+      "title": "Terminology and Definitions",
+      "level": 1,
+      "anchor": "2-0-terminology-and-definitions",
+      "page_start": 22,
+      "page_end": 23,
+      "content": [
+        {"type": "p", "text": "Standardized terminology is used across these guidelines to ensure clarity."}
+      ],
+      "tags": ["terminology"],
+      "references": []
+    }
+  ],
+  "notes": "Demo data for initial diff/search visualization."
 }

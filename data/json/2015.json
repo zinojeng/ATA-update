@@ -2,7 +2,55 @@
   "version": "2015",
   "title": "ATA Thyroid Nodule and Cancer Guidelines",
   "source_file": "2015 ATA thyroid nodule and cancer.pdf",
-  "generated_at": "2025-08-26T23:38:43.877205Z",
-  "sections": [],
-  "notes": "Placeholder file. Populate via Structuring Agent after extraction."
+  "generated_at": "2025-08-27T07:38:00Z",
+  "sections": [
+    {
+      "id": "2015-1-1-reco-a",
+      "path": "1.1",
+      "title": "Recommendation A: Initial Evaluation",
+      "level": 2,
+      "anchor": "1-1-recommendation-a-initial-evaluation",
+      "page_start": 10,
+      "page_end": 12,
+      "content": [
+        {"type": "p", "text": "Perform initial clinical assessment and ultrasound for all suspicious nodules."},
+        {"type": "list", "ordered": false, "items": [
+          "Assess patient history and risk factors",
+          "Neck ultrasound with nodule characterization",
+          "Consider FNA for nodules meeting size/risk criteria"
+        ]}
+      ],
+      "tags": ["initial", "evaluation"],
+      "references": []
+    },
+    {
+      "id": "2015-0-9-legacy-approach",
+      "path": "0.9",
+      "title": "Legacy Approach: Routine follow-up schedule",
+      "level": 2,
+      "anchor": "0-9-legacy-approach-routine-follow-up",
+      "page_start": 6,
+      "page_end": 7,
+      "content": [
+        {"type": "p", "text": "Suggest routine follow-up every 12 months for low-risk nodules."}
+      ],
+      "tags": ["follow-up"],
+      "references": []
+    },
+    {
+      "id": "2015-2-0-terminology",
+      "path": "2.0",
+      "title": "Terminology and Definitions",
+      "level": 1,
+      "anchor": "2-0-terminology-and-definitions",
+      "page_start": 20,
+      "page_end": 21,
+      "content": [
+        {"type": "p", "text": "Standardized terminology is used across these guidelines to ensure clarity."}
+      ],
+      "tags": ["terminology"],
+      "references": []
+    }
+  ],
+  "notes": "Demo data for initial diff/search visualization."
 }
