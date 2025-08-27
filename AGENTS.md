@@ -17,6 +17,12 @@ Do not commit or redistribute copyrighted content beyond what the project licens
 6) Render UI (comparison modes, navigation, highlights)
 7) Export reports (PDF/print/share URLs/citations)
 
+## Governance & Compliance
+- Content usage: 僅以結構化資料與必要片段（fair use）呈現，不批量再散佈完整原文。
+- PII/敏感資訊: 不預期存在；若抽取到個資，需在 structuring 階段移除或匿名化。
+- 版控策略: 原始 PDF 不必進 git；建議存放於 `data/raw/` 並在 .gitignore 排除。
+- 版權標示: 匯出與引用時附上來源與年份，避免誤導醫療建議。
+
 ## Roles and Responsibilities
 
 ### 1) Ingestion Agent
@@ -104,6 +110,12 @@ Do not commit or redistribute copyrighted content beyond what the project licens
   - Handle reordering: allow non-positional matches guided by IDs.
   - Consider sections with split/merge: record `relations: {split_from:[], merged_from:[]}` when detected.
 
+- Classification Policy (edge cases):
+  - Text-only rewording → Modified（若語義近似但字詞變動，仍標示 Modified）。
+  - 位置變更（重排）但內容相同 → Unchanged（關聯由 ID 或相似度維持）。
+  - 表格欄位調整/新增刪除 → Modified；若整段表格被移除 → Removed。
+  - 大幅拆分/合併 → Modified 並在 `relations` 記錄來源或目標。
+
 ### 4) Search Agent
 - Goal: full-text search across both guidelines with filters and quick jumps.
 - Inputs: `data/json/{2015.json,2025.json}`
@@ -122,6 +134,11 @@ Do not commit or redistribute copyrighted content beyond what the project licens
   - Filter by section/topic (via `path` or `tags`)
   - Quick jump to sections (anchors)
   - Persist search history (local storage)
+
+- Ranking/Tokenization（建議）:
+  - Tokenize: 空白/標點分詞 + 小寫正規化；可考慮 bigram 提升中文/英文混合。
+  - Field boosts: title×3, path×2, content×1, tags×2。
+  - Snippet: 就近擷取 1–2 行命中區段，並以 <mark> 包裹高亮（前端）。
 
 ### 5) Navigation Agent
 - Goal: generate a collapsible table of contents, breadcrumbs, bookmarks, and a quick access toolbar.
@@ -151,6 +168,7 @@ Do not commit or redistribute copyrighted content beyond what the project licens
   - Keyboard navigation for next/prev change.
   - High-contrast mode and color legend.
   - Preserve scroll position per pane.
+  - ARIA: 為主要容器與互動元件加上適當 `role` 與 `aria-*`。
 
 ### 7) Export Agent
 - Goal: export comparison artifacts and shareable links.
@@ -161,6 +179,10 @@ Do not commit or redistribute copyrighted content beyond what the project licens
   - Copyable citations
 - Citation format (example):
   - "American Thyroid Association. (2025). Management guidelines for adult patients with thyroid nodules and differentiated thyroid cancer. Retrieved from <app-url>#/compare?path=<...>"
+
+- Print/PDF（建議）:
+  - 採用 print 專用 CSS 隱藏互動元素，保留標題、變更標示、頁眉頁腳與引用。
+  - 大型附錄與表格允許分頁斷行，避免內容截斷。
 
 ### 8) QA Agent
 - Goal: validate data quality, UI correctness, and feature completeness.
@@ -201,6 +223,11 @@ Do not commit or redistribute copyrighted content beyond what the project licens
 - `data/diff/diff.json` must only include serializable primitives and arrays.
 - All anchors must be unique per version and resolvable via `#/compare?version=<year>&anchor=<anchor>`.
 
+### Anchors & IDs
+- Stability: `id` 基於 `version+path+title` 派生（或額外引入作者定義 ID 以橫跨版本穩定）。
+- Collision: 若 slug 重複（同名節點），在 anchor 後附加短雜湊 `-<hash6>`。
+- Redirects: 如節點重命名，保留 `redirect_from:[]` 以維護舊連結。
+
 ## URL and State Model
 - Route: `#/compare`
 - Query params:
@@ -209,6 +236,10 @@ Do not commit or redistribute copyrighted content beyond what the project licens
   - `anchor=<section-anchor>`
   - `q=<search-term>` and `filters=<csv>`
 - Hash fragments map to section anchors for deep links.
+
+### Share URL Examples
+- `#/compare?mode=detailed&left=2015&right=2025&anchor=1-1-recommendation-a-initial-evaluation`
+- `#/compare?mode=overview`
 
 ## Implementation Notes
 - Normalization:
@@ -221,6 +252,12 @@ Do not commit or redistribute copyrighted content beyond what the project licens
   - Lazy-load heavy sections; virtualize long lists of diffs.
   - Precompute diff summaries for overview mode.
 
+### Error Handling & Logging
+- Extraction: 逐頁記錄解析錯誤（頁碼、原因、信心分數）。
+- Structuring: 回報未匹配標題層級或缺失頁碼範圍的節點。
+- Diff: 產出未匹配清單與對應嘗試策略（title 相似度、內容相似度）。
+- 前端：在 UI 顯示可理解的錯誤訊息並允許重試載入。
+
 ## Acceptance Criteria
 - Data:
   - Canonical JSON produced for both years; TOC present; no duplicate anchors.
@@ -231,6 +268,11 @@ Do not commit or redistribute copyrighted content beyond what the project licens
   - Search finds expected sections and supports filters and history.
   - Navigation (TOC, breadcrumbs, bookmarks) functions and persists bookmarks locally.
   - Export produces readable reports and shareable links restore exact state.
+
+### KPIs & Sampling
+- 抽樣 50 個節點驗證 Diff 類型準確率 ≥ 95%。
+- 搜尋前 10 名結果命中率：基準查詢集平均 NDCG@10 ≥ 0.8。
+- 首屏載入（壓縮後）≤ 2.5 MB；互動延遲 < 200ms（中階硬體）。
 
 ## Non-Goals
 - Medical interpretation of guideline content.
@@ -246,3 +288,24 @@ Do not commit or redistribute copyrighted content beyond what the project licens
 6) Implement UI routes and components using the contracts above.
 7) Validate with QA checklist and iterate.
 
+## Versioning & Releases
+- Artifacts: `data/json/*`, `data/diff/diff.json`, `data/search/*.json` 使用資料版號（例如 `vYYYY.MM.DD`）於 release asset 或檔名尾碼。
+- UI: 使用 semver；標註相容之資料版（compat matrix）。
+- Changelog: 針對資料與 UI 分開維護，列出破壞性變更與遷移步驟。
+
+## Contribution Workflow
+- Branch: feature 分支開發 → PR → Review（資料與前端可分開 reviewer）。
+- Checks: CI 驗證 schema（JSON Schema）、lint、基本單元測試、體積門檻。
+- Code owners: 指派資料管線與前端維護者。
+
+## Risks & Mitigations
+- PDF 抽取品質不一：使用雙引擎比對或引入版面/字體線索，人工抽樣校正。
+- 標題規則變動：引入可組態標題檢測與路徑對映表（mapping）。
+- 大檔載入與性能：使用分頁載入與虛擬清單，摘要預先計算。
+- 語義變動難以量化：先以字面差異為主，逐步加入術語字典與相似度語義模型。
+
+## Glossary
+- TOC: 目錄樹狀結構。
+- Anchor: 前端深連結定位點（slug）。
+- Diff Pair: 一對 2015/2025 對應節點之差異紀錄。
+- Overview/Detailed/Change-only: 三種比較與顯示模式。
